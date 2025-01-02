@@ -3,7 +3,7 @@ name: Auto Commit
 on:
   schedule:
     - cron: "0 23 * * *" # 매일 오전 8시 (UTC 기준으로 23시)
-  workflow_dispatch: # 수동 실행도 가능
+  workflow_dispatch: # 수동 실행 가능
 
 jobs:
   build:
@@ -22,8 +22,8 @@ jobs:
       # 3. 변경사항 커밋
       - name: Commit Changes
         run: |
-          git config --local user.name "YourGitHubUsername" # 사용자명 설정
-          git config --local user.email "YourGitHubEmail@example.com" # 이메일 설정
+          git config --local user.name "YourGitHubUsername"
+          git config --local user.email "YourGitHubEmail@example.com"
           git add .
           git commit -m "Automated commit on $(date)" || echo "No changes to commit"
 

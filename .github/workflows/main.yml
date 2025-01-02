@@ -14,10 +14,20 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # 2. 파일 업데이트 (현재 날짜 추가)
-      - name: Update File
+      # 2. 파일 업데이트 (다양한 정보 추가)
+      - name: Update File with Random Message and Repo Info
         run: |
-          echo "$(date)" >> grass-log.txt
+          # 랜덤 메시지 설정
+          MESSAGES=("Stay positive!" "Keep going!" "You are doing great!" "One step at a time." "Believe in yourself.")
+          RANDOM_INDEX=$((RANDOM % ${#MESSAGES[@]}))
+          
+          # 브랜치 및 커밋 수 정보 추가
+          BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          COMMIT_COUNT=$(git rev-list --count HEAD)
+          
+          # grass-log.txt에 정보 기록
+          echo "$(date): ${MESSAGES[$RANDOM_INDEX]}" >> grass-log.txt
+          echo "$(date): Branch $BRANCH has $COMMIT_COUNT commits." >> grass-log.txt
 
       # 3. 변경사항 커밋
       - name: Commit Changes
@@ -25,7 +35,7 @@ jobs:
           git config --global user.name "your-github-username" # 사용자명
           git config --global user.email "your-email@example.com" # 이메일
           git add .
-          git commit -m "Automated commit on $(date)" || echo "No changes to commit"
+          git commit -m "Daily update on $(date +'%Y-%m-%d %H:%M:%S'): Updated log file" || echo "No changes to commit"
 
       # 4. 변경사항 푸시
       - name: Push Changes

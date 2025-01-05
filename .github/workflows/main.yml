@@ -33,7 +33,7 @@ jobs:
       - name: Commit Changes
         run: |
           git config --global user.name "isyouhyeong" # 사용자명
-          git config --global user.email "isyouh77@gmail.com" # 이메일
+          git config --global user.email "162817850+isyouhyeong@users.noreply.github.com" # 이메일
           git add .
           git commit -m "Daily update on $(date +'%Y-%m-%d %H:%M:%S'): Updated log file" || echo "No changes to commit"
 

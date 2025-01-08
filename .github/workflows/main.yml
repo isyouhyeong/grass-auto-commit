@@ -2,7 +2,7 @@ name: Auto Commit
 
 on:
   schedule:
-    - cron: "0 23 * * *" # UTC 기준 매일 23시 실행
+    - cron: "0 23 * * *" # 매일 오전 8시 (UTC 기준으로 23시)
   workflow_dispatch: # 수동 실행 가능
 
 jobs:
@@ -17,22 +17,26 @@ jobs:
       # 2. 파일 업데이트 (다양한 정보 추가)
       - name: Update File with Random Message and Repo Info
         run: |
+          # 랜덤 메시지 설정
           MESSAGES=("Stay positive!" "Keep going!" "You are doing great!" "One step at a time." "Believe in yourself.")
           RANDOM_INDEX=$((RANDOM % ${#MESSAGES[@]}))
+          
+          # 브랜치 및 커밋 수 정보 추가
           BRANCH=$(git rev-parse --abbrev-ref HEAD)
           COMMIT_COUNT=$(git rev-list --count HEAD)
-          UTC_DATE=$(date -u "+%Y-%m-%d %H:%M:%S UTC") # UTC 시간 기록
-
-          echo "$UTC_DATE: ${MESSAGES[$RANDOM_INDEX]}" >> grass-log.txt
-          echo "$UTC_DATE: Branch $BRANCH has $COMMIT_COUNT commits." >> grass-log.txt
+          
+          # grass-log.txt에 정보 기록
+          KST_DATE=$(TZ=Asia/Seoul date +"%Y-%m-%d %H:%M:%S")
+          echo "$KST_DATE: ${MESSAGES[$RANDOM_INDEX]}" >> grass-log.txt
+          echo "$KST_DATE: Branch $BRANCH has $COMMIT_COUNT commits." >> grass-log.txt
 
       # 3. 변경사항 커밋
       - name: Commit Changes
         run: |
           git config --global user.name "isyouhyeong" # 사용자명
-          git config --global user.email "162817850+isyouhyeong@users.noreply.github.com" # 이메일
+          git config --global user.email "isyouh77@gmail.com" # 이메일
           git add .
-          git commit -m "Daily update on $(date -u +'%Y-%m-%d %H:%M:%S UTC'): Updated log file" || echo "No changes to commit"
+          git commit -m "Daily update on $(TZ=Asia/Seoul date +'%Y-%m-%d %H:%M:%S'): Updated log file" || echo "No changes to commit"
 
       # 4. 변경사항 푸시
       - name: Push Changes

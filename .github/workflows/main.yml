@@ -2,7 +2,7 @@ name: Auto Commit
 
 on:
   schedule:
-    - cron: "0 23 * * *" # 매일 오전 8시 (UTC 기준으로 23시)
+    - cron: "0 23 * * *" # 매일 오전 8시 (UTC 기준 23시)
   workflow_dispatch: # 수동 실행 가능
 
 jobs:
@@ -41,6 +41,6 @@ jobs:
       # 4. 변경사항 푸시
       - name: Push Changes
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }} # Secrets에 저장된 토큰 사용
         run: |
           git push

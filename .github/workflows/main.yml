@@ -25,10 +25,13 @@ jobs:
           BRANCH=$(git rev-parse --abbrev-ref HEAD)
           COMMIT_COUNT=$(git rev-list --count HEAD)
           
-          # grass-log.txt에 정보 기록
-          KST_DATE=$(TZ=Asia/Seoul date +"%Y-%m-%d %H:%M:%S")
-          echo "$KST_DATE: ${MESSAGES[$RANDOM_INDEX]}" >> grass-log.txt
-          echo "$KST_DATE: Branch $BRANCH has $COMMIT_COUNT commits." >> grass-log.txt
+          # UTC 시간 및 랜덤 숫자 생성
+          UTC_DATE=$(date -u +"%Y-%m-%d %H:%M:%S") # UTC 시간
+          RANDOM_NUMBER=$((RANDOM)) # 랜덤 숫자
+
+          # grass-log.txt에 의미 있는 내용 기록
+          echo "$UTC_DATE: ${MESSAGES[$RANDOM_INDEX]} - Random: $RANDOM_NUMBER" >> grass-log.txt
+          echo "$UTC_DATE: Branch $BRANCH has $COMMIT_COUNT commits." >> grass-log.txt
 
       # 3. 변경사항 커밋
       - name: Commit Changes
@@ -36,7 +39,7 @@ jobs:
           git config --global user.name "isyouhyeong" # 사용자명
           git config --global user.email "isyouh77@gmail.com" # 이메일
           git add .
-          git commit -m "Daily update on $(TZ=Asia/Seoul date +'%Y-%m-%d %H:%M:%S'): Updated log file" || echo "No changes to commit"
+          git commit -m "Daily update on $(date -u +'%Y-%m-%d %H:%M:%S'): Updated log file" || echo "No changes to commit"
 
       # 4. 변경사항 푸시
       - name: Push Changes

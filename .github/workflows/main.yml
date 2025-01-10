@@ -24,14 +24,18 @@ jobs:
           # 브랜치 및 커밋 수 정보 추가
           BRANCH=$(git rev-parse --abbrev-ref HEAD)
           COMMIT_COUNT=$(git rev-list --count HEAD)
-          
-          # UTC 시간 및 랜덤 숫자 생성
+
+          # UTC 및 KST 시간 생성
           UTC_DATE=$(date -u +"%Y-%m-%d %H:%M:%S") # UTC 시간
+          KST_DATE=$(TZ=Asia/Seoul date +"%Y-%m-%d %H:%M:%S") # KST 시간
+          
+          # 랜덤 숫자 생성
           RANDOM_NUMBER=$((RANDOM)) # 랜덤 숫자
 
           # grass-log.txt에 의미 있는 내용 기록
-          echo "$UTC_DATE: ${MESSAGES[$RANDOM_INDEX]} - Random: $RANDOM_NUMBER" >> grass-log.txt
-          echo "$UTC_DATE: Branch $BRANCH has $COMMIT_COUNT commits." >> grass-log.txt
+          echo "$KST_DATE (KST): ${MESSAGES[$RANDOM_INDEX]} - Random: $RANDOM_NUMBER" >> grass-log.txt
+          echo "$KST_DATE (KST): Branch $BRANCH has $COMMIT_COUNT commits." >> grass-log.txt
+          echo "$UTC_DATE (UTC): Log updated." >> grass-log.txt
 
       # 3. 변경사항 커밋
       - name: Commit Changes

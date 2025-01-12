@@ -2,7 +2,7 @@ name: Auto Commit
 
 on:
   schedule:
-    - cron: "0 23 * * *" # 매일 오전 8시 (UTC 기준 23시)
+    - cron: "0 14 * * *" # 한국 시간(KST) 오전 11시
   workflow_dispatch: # 수동 실행 가능
 
 jobs:
@@ -14,21 +14,20 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # 2. 파일 업데이트 (UTC와 KST 시간 기록)
-      - name: Update File with UTC and KST
+      # 2. 파일 업데이트
+      - name: Update File with KST Time
         run: |
           # 랜덤 메시지 설정
           MESSAGES=("Stay positive!" "Keep going!" "You are doing great!" "One step at a time." "Believe in yourself.")
           RANDOM_INDEX=$((RANDOM % ${#MESSAGES[@]}))
+          
+          # KST 시간 설정
+          KST_DATE=$(TZ=Asia/Seoul date +"%Y-%m-%d %H:%M:%S")
+          RANDOM_NUMBER=$((RANDOM)) # 랜덤 숫자
 
-          # UTC 및 KST 시간 생성
-          UTC_DATE=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
-          KST_DATE=$(TZ=Asia/Seoul date +"%Y-%m-%d %H:%M:%S KST")
-          RANDOM_NUMBER=$((RANDOM)) # 랜덤 숫자 생성
-
-          # grass-log.txt 파일에 기록
-          echo "$UTC_DATE: ${MESSAGES[$RANDOM_INDEX]} - Random: $RANDOM_NUMBER" >> grass-log.txt
+          # grass-log.txt에 기록
           echo "$KST_DATE: ${MESSAGES[$RANDOM_INDEX]} - Random: $RANDOM_NUMBER" >> grass-log.txt
+          echo "$KST_DATE: Meaningful update added." >> grass-log.txt
 
       # 3. 변경사항 커밋
       - name: Commit Changes
@@ -36,11 +35,10 @@ jobs:
           git config --global user.name "isyouhyeong" # 사용자명
           git config --global user.email "isyouh77@gmail.com" # 이메일
           git add .
-          git commit -m "Daily update on $(date -u +'%Y-%m-%d %H:%M:%S UTC'): Updated log file" || echo "No changes to commit"
+          git commit -m "Daily update on $KST_DATE: Updated log file" || echo "No changes to commit"
 
       # 4. 변경사항 푸시
       - name: Push Changes
         env:
           GITHUB_TOKEN: ${{ secrets.JANDI_TOKEN }} # Secrets에 저장된 토큰 사용
-        run: |
-          git push
+        run: git push
